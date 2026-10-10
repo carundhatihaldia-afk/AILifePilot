@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8efff">
+  <title>LifePilot AI — Your Everyday Planner</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      color: #352847;
+      background: linear-gradient(135deg, #fff4f8, #f3edff, #fff9fc);
+      min-height: 100vh;
+    }
+    header {
+      padding: 25px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .logo { font-size: 25px; font-weight: bold; color: #7851a9; }
+    .logo span { color: #e77aa7; }
+    .tag { color: #756582; font-size: 13px; }
+    main { max-width: 1050px; margin: auto; padding: 20px; }
+    .hero { text-align: center; margin: 20px auto 32px; max-width: 720px; }
+    .pill {
+      display: inline-block; background: #f0e4ff; color: #7851a9;
+      border-radius: 30px; padding: 8px 14px; font-size: 12px;
+    }
+    h1 { font-size: clamp(32px, 5vw, 48px); margin: 16px 0 10px; }
+    h1 span { color: #d7659b; }
+    .hero p { color: #776a82; line-height: 1.7; }
+    .panel {
+      background: rgba(255,255,255,.9); border: 1px solid #eee0f5;
+      border-radius: 22px; padding: 24px; margin-bottom: 22px;
+      box-shadow: 0 10px 30px #5032690c;
+    }
+    h2 { font-size: 20px; margin: 0 0 17px; }
+    .categories {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 12px; margin-bottom: 22px;
+    }
+    .category {
+      border: 1px solid #eadcf5; background: #fffaff; color: #554461;
+      border-radius: 15px; padding: 17px 8px; cursor: pointer;
+      font: inherit; line-height: 1.5;
+    }
+    .category .emoji { display: block; font-size: 25px; margin-bottom: 7px; }
+    .category.active { border: 2px solid #a87cdb; background: #f3eaff; }
+    label { display: block; font-weight: bold; margin-bottom: 9px; }
+    textarea {
+      width: 100%; min-height: 125px; resize: vertical; padding: 15px;
+      border: 1px solid #e5d7ee; border-radius: 13px;
+      font: inherit; line-height: 1.6; background: #fff;
+    }
+    textarea:focus, button:focus-visible, input:focus-visible {
+      outline: 2px solid #a87cdb; outline-offset: 2px;
+    }
+    .options { display: flex; gap: 15px; flex-wrap: wrap; margin: 15px 0; }
+    select {
+      padding: 10px; border: 1px solid #e5d7ee; border-radius: 10px;
+      background: white; font: inherit;
+    }
+    .primary {
+      border: 0; border-radius: 12px; padding: 14px 20px;
+      background: linear-gradient(100deg, #a77add, #e783ae);
+      color: white; font: bold 15px inherit; font-family: inherit;
+      cursor: pointer; width: 100%;
+    }
+    .primary:disabled { opacity: .6; cursor: wait; }
+    .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .stat { padding: 16px; border-radius: 14px; background: #faf4ff; }
+    .stat strong { display: block; font-size: 25px; color: #8057b1; }
+    .stat span { font-size: 12px; color: #796d85; }
+    .task {
+      display: flex; align-items: flex-start; gap: 12px;
+      border: 1px solid #eee3f4; border-radius: 13px;
+      padding: 15px; margin: 12px 0; background: #fff;
+    }
+    .task input { width: 19px; height: 19px; accent-color: #a77add; margin-top: 3px; }
+    .task-body { flex: 1; }
+    .task-title { font-weight: bold; margin-bottom: 6px; }
+    .task-description { color: #776a82; font-size: 14px; line-height: 1.5; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 9px; }
+    .meta span { background: #f3eaff; padding: 5px 8px; border-radius: 20px; font-size: 11px; }
+    .done .task-title { text-decoration: line-through; color: #93869e; }
+    .done .task-description { color: #a49aaa; }
+    .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .count { background: #f3eaff; padding: 5px 10px; border-radius: 20px; font-size: 12px; }
+    .empty { text-align: center; padding: 22px 8px; color: #8a7b96; line-height: 1.7; }
+    .message { margin: 12px 0; color: #76518e; line-height: 1.6; }
+    .error { color: #b42355; }
+    .hidden { display: none; }
+    footer { text-align: center; padding: 25px; color: #95879f; font-size: 12px; }
+    @media (max-width: 650px) {
+      .categories { grid-template-columns: repeat(2, 1fr); }
+      .stats { grid-template-columns: 1fr; }
+      header { padding: 20px; }
+      .panel { padding: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">✿ LifePilot<span> AI</span></div>
+    <div class="tag">A little progress, every day ♡</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <span class="pill">YOUR PERSONAL EVERYDAY PLANNER</span>
+      <h1>Feeling overwhelmed?<br><span>Let's make a plan.</span></h1>
+      <p>Tell us what's on your mind. LifePilot AI will turn your everyday
+        problems into small, manageable steps you can actually complete.</p>
+    </section>
+
+    <section class="panel">
+      <h2>01. What do you need help with?</h2>
+      <div class="categories" id="categories">
+        <button class="category active" data-category="Study & Exams"><span class="emoji">📚</span>Study & Exams</button>
+        <button class="category" data-category="Household Chores"><span class="emoji">🏡</span>Household Chores</button>
+        <button class="category" data-category="Time Management"><span class="emoji">⏰</span>Time Management</button>
+        <button class="category" data-category="Personal Goals"><span class="emoji">🌷</span>Personal Goals</button>
+      </div>
+
+      <label for="problem">02. Tell me about your problem</label>
+      <textarea id="problem" maxlength="3000" placeholder="Example: My exams are in three days, I have five chapters left, and I don't know how to organise my time..."></textarea>
+
+      <div class="options">
+        <label for="availableTime">Available time:</label>
+        <select id="availableTime">
+          <option value="30 minutes">30 minutes</option>
+          <option value="1 hour" selected>1 hour</option>
+          <option value="2 hours">2 hours</option>
+          <option value="half a day">Half a day</option>
+          <option value="a full day">A full day</option>
+        </select>
+      </div>
+
+      <button class="primary" id="generate">✨ Generate My Action Plan</button>
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+    </section>
+
+    <section id="results" class="hidden">
+      <section class="panel">
+        <h2 id="planTitle">Your action plan</h2>
+        <p id="encouragement"></p>
+        <div class="stats">
+          <div class="stat"><strong id="total">0</strong><span>Total tasks</span></div>
+          <div class="stat"><strong id="completed">0</strong><span>Tasks completed</span></div>
+          <div class="stat"><strong id="progress">0%</strong><span>Overall progress</span></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <h2>03. Your Action Plan</h2>
+          <span class="count" id="pendingCount">0 pending</span>
+        </div>
+        <div id="pendingTasks"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <h2>04. Tasks Completed ✓</h2>
+          <span class="count" id="completedCount">0 done</span>
+        </div>
+        <div id="completedTasks" class="empty">Your completed tasks will appear here when you tick them off. 🌸</div>
+      </section>
+    </section>
+  </main>
+
+  <footer>Made with ♡ for a calmer, more organised everyday life.</footer>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    let selectedCategory = "Study & Exams";
+    let tasks = [];
+    let planTitle = "";
+    let encouragement = "";
+
+    $("categories").addEventListener("click", event => {
+      const button = event.target.closest("button[data-category]");
+      if (!button) return;
+      selectedCategory = button.dataset.category;
+      document.querySelectorAll(".category").forEach(item => {
+        item.classList.toggle("active", item === button);
+      });
+    });
+
+    $("generate").addEventListener("click", async () => {
+      const problem = $("problem").value.trim();
+      if (!problem) {
+        $("message").textContent = "Please describe your problem first. 🌷";
+        $("message").className = "message error";
+        $("problem").focus();
+        return;
+      }
+
+      const button = $("generate");
+      button.disabled = true;
+      button.textContent = "✨ Creating your personalised plan...";
+      $("message").className = "message";
+      $("message").textContent = "Gemini is breaking your problem into manageable steps...";
+      try {
+        const response = await fetch("/api/plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            category: selectedCategory,
+            problem: problem + "\nAvailable time: " + $("availableTime").value
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Unable to create a plan.");
+
+        planTitle = data.title || "Your Personal Action Plan";
+        encouragement = data.encouragement || "Take one step at a time. You've got this!";
+        tasks = data.tasks.map((task, index) => ({
+          ...task,
+          id: `${Date.now()}-${index}`,
+          done: false
+        }));
+        render();
+        $("results").classList.remove("hidden");
+        $("message").textContent = "Your plan is ready! Start with the first task. 💜";
+        $("results").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (error) {
+        $("message").textContent = error.message;
+        $("message").className = "message error";
+      } finally {
+        button.disabled = false;
+        button.textContent = "✨ Generate My Action Plan";
+      }
+    });
+
+    function render() {
+      $("planTitle").textContent = planTitle;
+      $("encouragement").textContent = encouragement;
+      const pending = tasks.filter(task => !task.done);
+      const completed = tasks.filter(task => task.done);
+      const percent = tasks.length ? Math.round(completed.length / tasks.length * 100) : 0;
+      $("total").textContent = tasks.length;
+      $("completed").textContent = completed.length;
+      $("progress").textContent = percent + "%";
+      $("pendingCount").textContent = pending.length + " pending";
+      $("completedCount").textContent = completed.length + " done";
+
+      $("pendingTasks").innerHTML = "";
+      $("completedTasks").innerHTML = "";
+      $("completedTasks").className = completed.length ? "" : "empty";
+
+      if (!pending.length) {
+        $("pendingTasks").innerHTML = '<div class="empty">Amazing! All your tasks are complete. 🎉</div>';
+      }
+      if (!completed.length) {
+        $("completedTasks").textContent = "Your completed tasks will appear here when you tick them off. 🌸";
+      }
+
+      [...pending, ...completed].forEach(task => {
+        const item = document.createElement("div");
+        item.className = "task" + (task.done ? " done" : "");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.done;
+        checkbox.setAttribute("aria-label", "Complete " + task.title);
+        checkbox.addEventListener("change", () => {
+          task.done = checkbox.checked;
+          render();
+        });
+
+        const content = document.createElement("div");
+        content.className = "task-body";
+
+        const title = document.createElement("div");
+        title.className = "task-title";
+        title.textContent = task.title;
+
+        const description = document.createElement("div");
+        description.className = "task-description";
+        description.textContent = task.description;
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        [task.minutes + " min", task.priority + " priority"].forEach(value => {
+          const chip = document.createElement("span");
+          chip.textContent = value;
+          meta.appendChild(chip);
+        });
+
+        content.append(title, description, meta);
+        item.append(checkbox, content);
+        (task.done ? $("completedTasks") : $("pendingTasks")).appendChild(item);
+      });
+    }
+  </script>
+</body>
+</html>
